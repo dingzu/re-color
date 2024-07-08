@@ -2,6 +2,7 @@
   <nav class="nav">
     <router-link to="/">Home</router-link> |
     <router-link to="/color-changer">色彩切换</router-link>
+    <router-link to="/font-auto-resize">色彩切换</router-link>
   </nav>
   <router-view/>
 </template>

@@ -13,6 +13,11 @@ const routes = [
         component: () => import('../views/ColorChanger.vue')
     },
     {
+        path: '/font-auto-resize',
+        name: 'FontAutoResize',
+        component: () => import('../views/FontAutoResize.vue')
+    },
+    {
         path: '/about',
         name: 'About',
         // 路由级代码分割
