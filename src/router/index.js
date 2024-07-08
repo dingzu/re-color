@@ -8,6 +8,11 @@ const routes = [
         component: Home
     },
     {
+        path: '/color-changer',
+        name: 'ColorChanger',
+        component: () => import('../views/ColorChanger.vue')
+    },
+    {
         path: '/about',
         name: 'About',
         // 路由级代码分割
