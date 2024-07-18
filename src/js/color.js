@@ -65,9 +65,11 @@ export function calculateColorTemperature(rgb) {
 }
 
 export function getTemperatureCategory(temp) {
-    if (temp <= 3500) return "暖色";
-    if (temp >= 5500) return "冷色";
-    return "中性";
+    if (temp <= 2700) return "暖色";
+    if (temp <= 3500) return "中暖";
+    if (temp <= 5000) return "中性";
+    if (temp <= 6500) return "中冷";
+    return "冷色";
 }
 
 export function colorDistance(c1, c2) {
@@ -112,4 +114,66 @@ export function rgbToHsl(r, g, b) {
     }
 
     return [h * 360, s * 100, l * 100];
-} 
+}
+
+
+export function getColorTemperatureRGB(r, g, b) {
+    r /= 255; g /= 255; b /= 255;
+    let x = r * 0.4124 + g * 0.3576 + b * 0.1805;
+    let y = r * 0.2126 + g * 0.7152 + b * 0.0722;
+    let z = r * 0.0193 + g * 0.1192 + b * 0.9505;
+
+    // XYZ to Lab
+    x /= 0.95047; y /= 1.00000; z /= 1.08883;
+    x = x > 0.008856 ? Math.pow(x, 1 / 3) : (7.787 * x) + 16 / 116;
+    y = y > 0.008856 ? Math.pow(y, 1 / 3) : (7.787 * y) + 16 / 116;
+    z = z > 0.008856 ? Math.pow(z, 1 / 3) : (7.787 * z) + 16 / 116;
+
+    const l = (116 * y) - 16;
+    const a = 500 * (x - y);
+    const b1 = 200 * (y - z);
+
+    if (a > 10 && b1 > 10) return '暖色';
+    if (a > 0 && b1 > 0) return '中暖';
+    if (a > -10 && b1 > -10) return '中性';
+    if (a < 0 && b1 < 0) return '中冷';
+    return '冷色';
+}
+
+// 其他算法
+function getColorTemperatureRedBlue(r, g, b) {
+    const ratio = r / (b + 1); // 避免除以零
+    if (ratio > 1.5) return '暖色';
+    if (ratio > 1.2) return '中暖';
+    if (ratio > 0.8) return '中性';
+    if (ratio > 0.5) return '中冷';
+    return '冷色';
+}
+
+function getColorTemperatureHSL(r, g, b) {
+    r /= 255; g /= 255; b /= 255;
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
+
+    if (max === min) {
+        h = s = 0; // 灰色
+    } else {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+    }
+
+    h *= 360; // 转换到度
+
+    if (h >= 0 && h < 30 || h >= 330) return '暖色';
+    if (h >= 30 && h < 60) return '中暖';
+    if (h >= 60 && h < 180) return '中性';
+    if (h >= 180 && h < 240) return '中冷';
+    return '冷色';
+}

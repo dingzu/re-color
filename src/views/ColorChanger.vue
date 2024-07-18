@@ -15,6 +15,7 @@
       :averageColor="selectedImage?.averageColor"
       :colorTemp="selectedImage?.colorTemp"
       :sortedPalette="selectedImage?.sortedPalette"
+      :colorTempRGB="selectedImage?.colorTempRGB"
     />
   </div>
 </template>
@@ -28,6 +29,7 @@ import {
   adaptiveMerge, 
   calculateAverageColor, 
   calculateColorTemperature,
+  getColorTemperatureRGB,
   colorDistance,
   rgbToHex,
   rgbToHsl
@@ -68,7 +70,12 @@ export default {
     };
 
     const analyzeColors = (img) => {
-      const palette = colorThief.getPalette(img, 30);
+const palette = colorThief.getPalette(img, 30).map(color => {
+  if (color.some(value => value > 255)) {
+    return color.map(value => Math.max(0, Math.min(255, value - 1)));
+  }
+  return color;
+});
       console.log('色彩分析1',palette)
       let mergedPalette = mergeSimilarColors(palette);
       console.log('色彩分析2',mergedPalette)
@@ -81,6 +88,7 @@ export default {
       const averageColor = calculateAverageColor(palette);
       console.log('色彩分析3-平均',averageColor)
       const colorTemp = Math.round(calculateColorTemperature(averageColor));
+      const colorTempRGB = getColorTemperatureRGB(averageColor[0],averageColor[1],averageColor[2])
       
       const sortedPalette = mergedPalette
         .sort((a, b) => b.count - a.count)
@@ -92,7 +100,7 @@ export default {
           distance: Math.round(colorDistance(color.color, averageColor))
         }));
 
-      return { averageColor, colorTemp, sortedPalette };
+      return { averageColor, colorTemp, sortedPalette,colorTempRGB };
     };
 
     const selectImage = (index) => {

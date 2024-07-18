@@ -3,14 +3,29 @@
     <div class="color-analysis-result">
         <div class="line">
             <div class="text-group">
-            <p class="label">平均颜色:{{ averageColorHex }}</p>
-            <div class="color-box" :style="{ backgroundColor: averageColorRGB }"></div>
-        </div>
+              <p class="label">平均颜色:{{ averageColorHex }}</p>
+              <div class="color-box" :style="{ backgroundColor: averageColorRGB }"></div>
+            </div>
+            
+            <div class="text-group">
+              <p class="label">冷暖倾向: LAB算法</p>
+              <div class="span-wrp">
+                <span 
+                  v-for="temp in ['冷色', '中冷', '中性', '中暖', '暖色']" 
+                  :key="temp"
+                  class="temperature-option" 
+                  :class="{ selected: temp === colorTempRGB }"
+                >
+                  {{ temp }}
+                </span>
+            </div>
+            </div>
+
         <div class="text-group">
             <p class="label">颜色温度:{{ colorTemp }}K</p>
             <div class="span-wrp">
                 <span 
-                  v-for="temp in ['冷色', '中性', '暖色']" 
+                  v-for="temp in ['冷色', '中冷', '中性', '中暖', '暖色']" 
                   :key="temp"
                   class="temperature-option" 
                   :class="{ selected: temp === colorTempCategory }"
@@ -54,6 +69,7 @@
     props: {
       averageColor: Array,
       colorTemp: Number,
+      colorTempRGB : String,
       sortedPalette: Array
     },
     setup(props) {
@@ -89,7 +105,7 @@
     border 1px solid #222
     padding 8px
     float left
-    width 240px
+    width 280px
     margin-right 12px
     .label
         font-size 14px
@@ -108,7 +124,7 @@
   display block
   float left
   margin-right 8px
-  width 60px
+  width 44px
   height 30px
   border 1px solid #ccc
   border-radius 5px
