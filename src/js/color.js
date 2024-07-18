@@ -43,16 +43,25 @@ export function calculateAverageColor(palette) {
 }
 
 export function calculateColorTemperature(rgb) {
-    const [r, g, b] = rgb;
-    const X = (-0.14282 * r) + (1.54924 * g) + (-0.95641 * b);
-    const Y = (-0.32466 * r) + (1.57837 * g) + (-0.73191 * b);
-    const Z = (-0.68202 * r) + (0.77073 * g) + (0.56332 * b);
+    // 将 RGB 值归一化到 0-1 范围
+    const r = rgb[0] / 255.0;
+    const g = rgb[1] / 255.0;
+    const b = rgb[2] / 255.0;
 
-    const x = X / (X + Y + Z);
-    const y = Y / (X + Y + Z);
+    // 计算色度坐标
+    let X = 0.4124 * r + 0.3576 * g + 0.1805 * b;
+    let Y = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    let Z = 0.0193 * r + 0.1192 * g + 0.9505 * b;
 
-    const n = (x - 0.3320) / (0.1858 - y);
-    return 449 * Math.pow(n, 3) + 3525 * Math.pow(n, 2) + 6823.3 * n + 5520.33;
+    // 计算 xy 色度
+    let x = X / (X + Y + Z);
+    let y = Y / (X + Y + Z);
+
+    // 计算 CCT (相关色温)
+    let n = (x - 0.3320) / (0.1858 - y);
+    let cct = 449 * Math.pow(n, 3) + 3525 * Math.pow(n, 2) + 6823.3 * n + 5520.33;
+
+    return cct
 }
 
 export function getTemperatureCategory(temp) {
