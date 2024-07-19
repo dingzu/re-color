@@ -1,10 +1,10 @@
 <template>
   <nav class="nav">
-    <router-link class="nav-item" to="/">Home</router-link> 
-    <router-link class="nav-item" to="/color-changer">色彩裂变</router-link> 
+    <router-link class="nav-item" to="/">Home</router-link>
+    <router-link class="nav-item" to="/color-changer">色彩裂变</router-link>
     <router-link class="nav-item" to="/font-auto-resize">文字换行</router-link>
   </nav>
-  <router-view/>
+  <router-view />
 </template>
 
 <style lang="stylus">

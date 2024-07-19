@@ -7,100 +7,107 @@
       </div>
       <div>
         <label for="font-size">字号（px）：</label>
-        <input id="font-size" type="number" v-model="userFontSize" min="1">
+        <input id="font-size" type="number" v-model="userFontSize" min="1" />
       </div>
       <div>
         <label for="container-width">渲染区域宽度（px）：</label>
-        <input id="container-width" type="number" v-model="containerWidth" min="1">
+        <input
+          id="container-width"
+          type="number"
+          v-model="containerWidth"
+          min="1"
+        />
       </div>
     </div>
-    <div class="preview-container" :style="containerStyle" ref="previewContainer">
+    <div
+      class="preview-container"
+      :style="containerStyle"
+      ref="previewContainer"
+    >
       <div class="preview-text" :style="textStyle">{{ previewText }}</div>
     </div>
-    <div class="info">
-      实际字号：{{ calculatedFontSize }}px
-    </div>
+    <div class="info">实际字号：{{ calculatedFontSize }}px</div>
   </div>
 </template>
 
 <script>
-import { ref, computed, watch, onMounted, nextTick } from 'vue'
+import { ref, computed, watch, onMounted, nextTick } from "vue";
 
 export default {
-  name: 'TextPreview',
+  name: "TextPreview",
   setup() {
-    const previewText = ref('请输入预览文字')
-    const userFontSize = ref(16)
-    const containerWidth = ref(300)
-    const calculatedFontSize = ref(16)
-    const previewContainer = ref(null)
+    const previewText = ref("请输入预览文字");
+    const userFontSize = ref(16);
+    const containerWidth = ref(300);
+    const calculatedFontSize = ref(16);
+    const previewContainer = ref(null);
 
     const containerStyle = computed(() => ({
       width: `${containerWidth.value}px`,
-    }))
+    }));
 
     const textStyle = computed(() => ({
       fontSize: `${calculatedFontSize.value}px`,
-      wordWrap: 'break-word',
-      whiteSpace: 'pre-wrap',
-    }))
+      wordWrap: "break-word",
+      whiteSpace: "pre-wrap",
+    }));
 
     const calculateFontSize = async () => {
-      await nextTick()
-      const container = previewContainer.value
-      if (!container) return
+      await nextTick();
+      const container = previewContainer.value;
+      if (!container) return;
 
-      let fontSize = userFontSize.value
-      let isValid = false
+      let fontSize = userFontSize.value;
+      let isValid = false;
 
       while (!isValid && fontSize > 1) {
-        container.style.fontSize = `${fontSize}px`
-        const lines = getTextLines(container)
-        isValid = lines.every(line => line.trim().length > 1)
-        
+        container.style.fontSize = `${fontSize}px`;
+        const lines = getTextLines(container);
+        isValid = lines.every((line) => line.trim().length > 1);
+
         if (!isValid) {
-          fontSize--
+          fontSize--;
         }
       }
 
-      calculatedFontSize.value = fontSize
-    }
+      calculatedFontSize.value = fontSize;
+    };
 
     const getTextLines = (element) => {
-      const text = element.innerText
-      const words = text.split('')
-      const lines = []
-      let line = ''
+      const text = element.innerText;
+      const words = text.split("");
+      const lines = [];
+      let line = "";
 
       for (const word of words) {
-        const testLine = line + word
-        const testLineWidth = getTextWidth(testLine, element)
+        const testLine = line + word;
+        const testLineWidth = getTextWidth(testLine, element);
 
         if (testLineWidth > containerWidth.value) {
-          lines.push(line)
-          line = word
+          lines.push(line);
+          line = word;
         } else {
-          line = testLine
+          line = testLine;
         }
       }
 
       if (line) {
-        lines.push(line)
+        lines.push(line);
       }
 
-      return lines
-    }
+      return lines;
+    };
 
     const getTextWidth = (text, element) => {
-      const canvas = document.createElement('canvas')
-      const context = canvas.getContext('2d')
-      context.font = getComputedStyle(element).font
-      return context.measureText(text).width
-    }
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+      context.font = getComputedStyle(element).font;
+      return context.measureText(text).width;
+    };
 
-    watch([previewText, userFontSize, containerWidth], calculateFontSize)
+    watch([previewText, userFontSize, containerWidth], calculateFontSize);
 
-    onMounted(calculateFontSize)
+    onMounted(calculateFontSize);
 
     return {
       previewText,
@@ -110,13 +117,12 @@ export default {
       containerStyle,
       textStyle,
       previewContainer,
-    }
-  }
-}
+    };
+  },
+};
 </script>
 
 <style scoped>
-
 .inputs {
   margin-bottom: 20px;
 }
@@ -130,7 +136,8 @@ label {
   margin-bottom: 5px;
 }
 
-input, textarea {
+input,
+textarea {
   width: 100%;
   padding: 5px;
 }
