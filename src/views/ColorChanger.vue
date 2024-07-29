@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <h1>图像颜色分析</h1>
+    <!-- 文字输入 -->
     <div class="input">
       <input
         type="file"
@@ -9,6 +10,7 @@
         class="button"
       />
     </div>
+    <!-- 图片展示 -->
     <div class="img-wrp">
       <div
         v-for="(image, index) in images"
@@ -23,6 +25,7 @@
         />
       </div>
     </div>
+    <!-- 色彩分析面板 -->
     <ColorAnalysisResult
       v-if="selectedImageIndex !== null"
       :averageColor="selectedImage?.averageColor"
@@ -30,6 +33,8 @@
       :sortedPalette="selectedImage?.sortedPalette"
       :colorTempRGB="selectedImage?.colorTempRGB"
     />
+    <!-- 生成 Banner 列表 -->
+    <BannerTest />
   </div>
 </template>
 
@@ -37,6 +42,7 @@
 import { ref, computed } from "vue";
 import ColorThief from "colorthief";
 import ColorAnalysisResult from "./ColorAnalysisResult.vue";
+import BannerTest from "./BannerTest.vue";
 import {
   mergeSimilarColors,
   adaptiveMerge,
@@ -52,6 +58,7 @@ export default {
   name: "App",
   components: {
     ColorAnalysisResult,
+    BannerTest,
   },
   setup() {
     const images = ref([]);
