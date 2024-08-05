@@ -26,7 +26,15 @@
       </div>
     </div>
     <!-- 生成 Banner -->
-    <BannerTest v-if="selectedImage" :image="selectedImage.src" />
+    <BannerTest
+      v-if="selectedImage"
+      :key="selectedImage"
+      :image="selectedImage.src"
+      :averageColor="selectedImage?.averageColor"
+      :colorTemp="selectedImage?.colorTemp"
+      :sortedPalette="selectedImage?.sortedPalette"
+      :colorTempRGB="selectedImage?.colorTempRGB"
+    />
     <!-- 色彩分析面板 -->
     <ColorAnalysisResult
       v-if="selectedImageIndex !== null"
@@ -95,9 +103,7 @@ export default {
         }
         return color;
       });
-      console.log("色彩分析1", palette);
       let mergedPalette = mergeSimilarColors(palette);
-      console.log("色彩分析2", mergedPalette);
       while (mergedPalette.length > 5) {
         mergedPalette = adaptiveMerge(mergedPalette);
       }
@@ -106,7 +112,6 @@ export default {
         0
       );
       const averageColor = calculateAverageColor(palette);
-      console.log("色彩分析3-平均", averageColor);
       const colorTemp = Math.round(calculateColorTemperature(averageColor));
       const colorTempRGB = getColorTemperatureRGB(
         averageColor[0],
