@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <h1>图像颜色分析</h1>
-    <!-- 文字输入 -->
+    <!-- 文件输入 -->
     <div class="input">
       <input
         type="file"
@@ -25,6 +25,8 @@
         />
       </div>
     </div>
+    <!-- 生成 Banner -->
+    <BannerTest v-if="selectedImage" :image="selectedImage.src" />
     <!-- 色彩分析面板 -->
     <ColorAnalysisResult
       v-if="selectedImageIndex !== null"
@@ -33,8 +35,6 @@
       :sortedPalette="selectedImage?.sortedPalette"
       :colorTempRGB="selectedImage?.colorTempRGB"
     />
-    <!-- 生成 Banner 列表 -->
-    <BannerTest />
   </div>
 </template>
 
@@ -42,7 +42,7 @@
 import { ref, computed } from "vue";
 import ColorThief from "colorthief";
 import ColorAnalysisResult from "./ColorAnalysisResult.vue";
-import BannerTest from "./BannerTest.vue";
+import BannerTest from "../components/BannerTest.vue";
 import {
   mergeSimilarColors,
   adaptiveMerge,
@@ -63,7 +63,6 @@ export default {
   setup() {
     const images = ref([]);
     const selectedImageIndex = ref(null);
-
     const colorThief = new ColorThief();
 
     const selectedImage = computed(() =>
@@ -75,7 +74,6 @@ export default {
     const handleImageUpload = (e) => {
       const file = e.target.files[0];
       const reader = new FileReader();
-
       reader.onload = (event) => {
         const img = new Image();
         img.onload = () => {
@@ -87,7 +85,6 @@ export default {
         };
         img.src = event.target.result;
       };
-
       reader.readAsDataURL(file);
     };
 
@@ -101,11 +98,9 @@ export default {
       console.log("色彩分析1", palette);
       let mergedPalette = mergeSimilarColors(palette);
       console.log("色彩分析2", mergedPalette);
-
       while (mergedPalette.length > 5) {
         mergedPalette = adaptiveMerge(mergedPalette);
       }
-
       const totalCount = mergedPalette.reduce(
         (sum, color) => sum + color.count,
         0
@@ -118,7 +113,6 @@ export default {
         averageColor[1],
         averageColor[2]
       );
-
       const sortedPalette = mergedPalette
         .sort((a, b) => b.count - a.count)
         .map((color) => ({
@@ -130,7 +124,6 @@ export default {
           percentage: ((color.count / totalCount) * 100).toFixed(2),
           distance: Math.round(colorDistance(color.color, averageColor)),
         }));
-
       return { averageColor, colorTemp, sortedPalette, colorTempRGB };
     };
 
@@ -174,6 +167,7 @@ export default {
     left 50%
     transform translate(-50%,-50%)
     width 100px
+
 .img-wrp
   overflow hidden
 </style>

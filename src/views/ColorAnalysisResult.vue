@@ -97,6 +97,7 @@ export default {
 
 <style lang="stylus">
 .color-analysis-result
+    margin-top 24px
     background-color #444
     border-radius 0
     padding 12px
