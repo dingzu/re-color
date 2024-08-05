@@ -53,8 +53,10 @@ export function findClosestColor(inputColor, dataBase) {
 }
 
 // 转换背景色
-export function transformColor(hexColor) {
+export function transformColor(hexColor, options = {}) {
   console.log("hexColor", hexColor);
+  const { hOffset = 50, newS = 100, newL = 88 } = options;
+
   // 将 hex 转换为 RGB
   let r = parseInt(hexColor.slice(1, 3), 16) / 255;
   let g = parseInt(hexColor.slice(3, 5), 16) / 255;
@@ -77,12 +79,8 @@ export function transformColor(hexColor) {
   }
   h = (h + 360) % 360; // 确保 h 在 0-360 范围内
 
-  // 设置新的 S 和 L 值
-  const s = 100;
-  const l = 88;
-
   // 计算第二个颜色的 Hue
-  const h2 = (h - 50 + 360) % 360;
+  const h2 = (h - hOffset + 360) % 360;
 
   // 将 HSL 转换回 RGB，然后转换为 Hex
   function hslToHex(h, s, l) {
@@ -120,8 +118,8 @@ export function transformColor(hexColor) {
     return `#${r}${g}${b}`;
   }
 
-  const color1 = hslToHex(h, s, l);
-  const color2 = hslToHex(h2, s, l);
+  const color1 = hslToHex(h, newS, newL);
+  const color2 = hslToHex(h2, newS, newL);
 
   return { color1, color2 };
 }

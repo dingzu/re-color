@@ -9,11 +9,11 @@
       <img :src="image" alt="Banner Image" class="banner-image" />
     </div>
     <!--Svg 素材-->
-    <ArrowSvg :backgroundColor="closestColor.hex" class="arrow-svg cus-svg" />
+    <ArrowSvg :backgroundColor="closestColor" class="arrow-svg cus-svg" />
     <TagSvg
       class="tag-svg cus-svg"
-      :mainColor="closestColor.hex"
-      :shadowColor="closestColor.hex"
+      :mainColor="closestColor"
+      :shadowColor="closestColor"
       :accentColor="secondColor"
     />
     <!--背景点-->
@@ -54,7 +54,12 @@ export default {
   },
   setup(props) {
     // 生成主色
-    const closestColor = findClosestColor(props.averageColor, "main");
+    // const closestColor = findClosestColor(props.averageColor, "main");
+    const closestColor = transformColor(props.sortedPalette[0].hex, {
+      hOffset: 50,
+      newS: 100,
+      newL: 60,
+    }).color1;
     // 提取副色
     let secondColor = "#000";
     if (props.sortedPalette.length > 1) {
@@ -63,7 +68,11 @@ export default {
       secondColor = props.sortedPalette[0].hex;
     }
     // 生成背景
-    let BgColor = transformColor(closestColor.hex);
+    let BgColor = transformColor(closestColor, {
+      hOffset: 50,
+      newS: 100,
+      newL: 88,
+    });
     let bgStyle = `background: linear-gradient(80deg, #FFF -3.16%, ${BgColor.color2} 65.44%, ${BgColor.color1} 97.42%);`;
     return { closestColor, secondColor, bgStyle };
   },
